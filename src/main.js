@@ -87,7 +87,7 @@ const createIcon = (i) => {
   return root;
 };
 
-const reset_icons = () => {
+const resetIcons = () => {
   currentIndex = getNoOfIconsInOneRow() * Math.ceil(innerHeight / 100);
   iconsEl.innerHTML = icons
     .slice(0, currentIndex)
@@ -112,7 +112,7 @@ searchInput.oninput = () => {
       ? allIcons
       : index.search(searchInput.value).map((el) => allIcons[el]);
   currentIndex = 0;
-  reset_icons();
+  resetIcons();
 };
 
 const loadMoreIcons = () => {
@@ -129,7 +129,7 @@ window.onscroll = loadMoreIcons;
 const downloadIcon = (i) => {
   const icon = icons[i];
   download(
-    icon.name + "-" + icon.type + ".icon",
+    icon.name + "-" + icon.type + ".svg",
     `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="${icon.viewBox}">
 <path
 d="${icon.d}"
@@ -148,5 +148,5 @@ fetch("./data.json")
 
     allIcons = _allIcons;
     icons = allIcons;
-    reset_icons();
+    resetIcons();
   });
