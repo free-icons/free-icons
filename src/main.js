@@ -147,6 +147,13 @@ fetch("./data.json")
     }
 
     allIcons = _allIcons;
-    icons = allIcons;
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get("query");
+    icons =
+      searchInput.value == ""
+        ? query
+          ? index.search(query).map((el) => allIcons[el])
+          : allIcons
+        : index.search(searchInput.value).map((el) => allIcons[el]);
     resetIcons();
   });
