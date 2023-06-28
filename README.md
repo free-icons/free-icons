@@ -10,7 +10,7 @@ To start incorporating the Free Icons into your projects, simply visit our websi
 
 - **Extensive Collection**: Browse through thousands of icons, neatly categorized and available in various styles.
 - **Free to Use**: All icons in this repository are completely free for both personal and commercial use.
-<!-- - **Multiple Formats**: Icons are provided in popular formats such as SVG, and PNG, ensuring compatibility across different platforms and design tools. -->
+- **Scalable Vector Graphics (SVG)**: All icons are provided in SVG format, allowing for easy scaling and customization while maintaining crispness and clarity.
 - **High Quality**: Each icon is meticulously crafted, offering excellent visual clarity and detail.
 
 ## Thanks
