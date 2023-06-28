@@ -30,3 +30,5 @@ All icons in this repository are released under the [Creative Commons Attributio
 If you have any questions, suggestions, or need support, please don't hesitate to open an issue in this repository.
 
 Enjoy the vast collection of Free Icons and bring your projects to life with captivating visuals! Visit [https://free-icons.github.io/free-icons/](https://free-icons.github.io/free-icons/) to get started.
+
+Happy designing!
