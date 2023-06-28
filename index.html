@@ -111,28 +111,27 @@
 
       @media only screen and (max-width: 1360px) {
         #icons {
-          display: grid;
           grid-template-columns: repeat(5, 1fr);
-          gap: 0.9rem;
-          padding: 1rem;
+        }
+
+        .icon {
+          width: calc((100vw - 6.4rem) / 5);
         }
       }
 
       @media only screen and (max-width: 1180px) {
         #icons {
-          display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 0.9rem;
-          padding: 1rem;
+        }
+
+        .icon {
+          width: calc((100vw - 6.4rem) / 4);
         }
       }
 
       @media only screen and (max-width: 960px) {
         #icons {
-          display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 0.9rem;
-          padding: 1rem;
         }
 
         .icon:hover {
@@ -146,14 +145,19 @@
         .icon:hover .download {
           color: #2d2d2d;
         }
+
+        .icon {
+          width: calc((100vw - 6.4rem) / 3);
+        }
       }
 
       @media only screen and (max-width: 720px) {
         #icons {
-          display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 0.9rem;
-          padding: 1rem;
+        }
+
+        .icon {
+          width: calc((100vw - 6.4rem) / 2);
         }
       }
     </style>
