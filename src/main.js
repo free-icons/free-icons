@@ -115,7 +115,7 @@ searchInput.oninput = () => {
   reset_icons();
 };
 window.onscroll = () => {
-  if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
+  if (getScrollTop() < getDocumentHeight() - window.innerHeight - 10) return;
   for (let i = 0; i < getNoOfIconsInOneRow() && i < icons.length; i++) {
     iconsEl.appendChild(createIcon(currentIndex));
     currentIndex++;
