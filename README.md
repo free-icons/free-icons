@@ -1,10 +1,6 @@
 # Free Icons
 
-Welcome to the Free Icons repository! This collection offers a wide range of over 17,000 high-quality icons that you can use freely.
-
-## About
-
-Free Icons is a comprehensive collection of diverse and visually appealing icons suitable for various projects. Whether you are a developer, designer, or creative enthusiast, these icons will enhance the visual aesthetics of your work.
+Welcome to the Free Icons repository! This repository provides a collection of over 17,000 high-quality icons that you can use freely in your design projects. Whether you're working on web development, UI/UX design, or any other creative endeavor, you'll find a diverse range of icons to enhance your work.
 
 ## Usage
 
@@ -16,6 +12,10 @@ To start incorporating the Free Icons into your projects, simply visit our websi
 - **Free to Use**: All icons in this repository are completely free for both personal and commercial use.
 <!-- - **Multiple Formats**: Icons are provided in popular formats such as SVG, and PNG, ensuring compatibility across different platforms and design tools. -->
 - **High Quality**: Each icon is meticulously crafted, offering excellent visual clarity and detail.
+
+## Thanks
+
+We would like to express our gratitude to the [font-icons-scraper](https://github.com/a-rustacean/font-icons-scraper) repository by [a-rustacean](https://github.com/a-rustacean). Their valuable work and effort in curating a comprehensive collection of icons have inspired and contributed to the creation of this repository.
 
 ## Contributing
 
