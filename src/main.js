@@ -121,7 +121,7 @@ const loadMoreIcons = () => {
     iconsEl.appendChild(createIcon(currentIndex));
     currentIndex++;
   }
-}
+};
 
 window.onresize = loadMoreIcons;
 window.onscroll = loadMoreIcons;
