@@ -32,11 +32,11 @@ function getScrollTop() {
  * @param {string} source source of the file
  */
 function download(name, source) {
-  const blob = new Blob([source], { type: "text/plain" });
+  const blob = new Blob([source], { type: "text/svg+xml" });
   const url = URL.createObjectURL(blob);
 
   const anchor = document.createElement("a");
-  anchor.type = "text/plain";
+  anchor.type = "text/svg+xml";
   anchor.download = name;
   anchor.href = url;
   anchor.click();
@@ -114,13 +114,17 @@ searchInput.oninput = () => {
   currentIndex = 0;
   reset_icons();
 };
-window.onscroll = () => {
-  if (getScrollTop() < getDocumentHeight() - window.innerHeight - 10) return;
-  for (let i = 0; i < getNoOfIconsInOneRow() && i < icons.length; i++) {
+
+const loadMoreIcons = () => {
+  if (getScrollTop() < getDocumentHeight() - window.innerHeight - 200) return;
+  for (let i = 0; i < getNoOfIconsInOneRow() * 2 && i < icons.length; i++) {
     iconsEl.appendChild(createIcon(currentIndex));
     currentIndex++;
   }
-};
+}
+
+window.onresize = loadMoreIcons;
+window.onscroll = loadMoreIcons;
 
 const downloadIcon = (i) => {
   const icon = icons[i];
