@@ -13,10 +13,6 @@ To start incorporating the Free Icons into your projects, simply visit our websi
 - **Scalable Vector Graphics (SVG)**: All icons are provided in SVG format, allowing for easy scaling and customization while maintaining crispness and clarity.
 - **High Quality**: Each icon is meticulously crafted, offering excellent visual clarity and detail.
 
-## Thanks
-
-We would like to express our gratitude to the [font-icons-scraper](https://github.com/a-rustacean/font-icons-scraper) repository by [a-rustacean](https://github.com/a-rustacean). Their valuable work and effort in curating a comprehensive collection of icons have inspired and contributed to the creation of this repository.
-
 ## Contributing
 
 We warmly welcome contributions from the community! If you have icons to share with others, please follow the guidelines outlined in [CONTRIBUTING.md](CONTRIBUTING.md) to contribute to the Free Icons repository.
