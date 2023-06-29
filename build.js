@@ -20,6 +20,7 @@ for (const svgFileName of readdirSync("svgs")) {
     throw new Error(
       `Invalid svg: ${svgFileName}, expected a svg element found "${svg.tagName}"`
     );
+  if (svg.children.length != 1) throw new Error(`expected only one svg children but found ${svg.children.length}`);
   const p = svg.children[0];
   if (!p || p.tagName != "path" || !p.properties.d)
     throw new Error(
@@ -50,8 +51,28 @@ for (const svgFileName of readdirSync("svgs")) {
   });
 }
 
-const types = ["brands", "thin", "light", "regular", "solid", "sharp-light", "sharp-regular", "sharp-solid"];
-const uniqueIconNames = allIcons.map(el => el.name).filter((name, i) => allIcons.findIndex(el2 => el2.name == name) == i);
-const icons = new Array(types.length * uniqueIconNames.length).fill(undefined).map((_, i) => allIcons.find(el => el.name == uniqueIconNames[Math.floor(i / types.length)] && el.type == types[i % types.length])).filter(el => !!el);
+const types = [
+  "brands",
+  "thin",
+  "light",
+  "regular",
+  "solid",
+  "sharp-light",
+  "sharp-regular",
+  "sharp-solid",
+];
+const uniqueIconNames = allIcons
+  .map((el) => el.name)
+  .filter((name, i) => allIcons.findIndex((el2) => el2.name == name) == i);
+const icons = new Array(types.length * uniqueIconNames.length)
+  .fill(undefined)
+  .map((_, i) =>
+    allIcons.find(
+      (el) =>
+        el.name == uniqueIconNames[Math.floor(i / types.length)] &&
+        el.type == types[i % types.length]
+    )
+  )
+  .filter((el) => !!el);
 
 writeFileSync("dist/data.json", JSON.stringify(icons));

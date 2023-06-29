@@ -1,7 +1,7 @@
-name: Build, Test and Deploy
+name: Build and Test pull request
 
 on:
-  push:
+  pull_request:
     branches: ["master"]
 
 jobs:
@@ -17,10 +17,3 @@ jobs:
         cache: "npm"
     - run: npm run build
     - run: npm run test
-    - name: Deploy
-      uses: crazy-max/ghaction-github-pages@v3
-      with:
-        target_branch: gh-pages
-        build_dir: dist
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

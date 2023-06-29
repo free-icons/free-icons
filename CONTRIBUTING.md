@@ -16,17 +16,22 @@ Please take a moment to review the guidelines below to ensure a smooth and effec
 
 ## Contribution Guidelines
 
-To maintain a high-quality collection of icons, we kindly request that you adhere to the following guidelines:
+To contribute an icon to the Free Icons project, please adhere to the following rules:
 
-- Follow the JSON structure of the `data.json` file, which contains an array of objects with the following properties:
-  - `name`: The name of the icon.
-  - `type`: The type of the icon, which can only be one of: `brands`, `thin`, `light`, `regular`, `solid`, `sharp-light`, `sharp-regular`, `sharp-solid`.
-  - `d`: The path data for the icon.
-  - `viewBox`: The viewBox attribute for the icon.
-- Ensure the `data.json` file remains valid JSON by validating it before submitting your contribution.
-- Include clear and descriptive names for the icons.
-- Maintain consistent quality and style throughout the icon collection.
-- If you want to allow color customization, make sure the `fill` property of the SVG element is used to change the color of the entire icon. Avoid hard-coding specific colors in the `d` attribute.
+1. Check for Existing Icons: Before creating a new icon, please make sure that an icon with the same name does not already exist in the repository. Avoid duplicating icons to maintain a clean and organized collection.
+
+2. Icon Naming Convention: When adding an icon, follow the naming convention: `{type}-{name}.svg`. The type should be one of the following: `thin`, `light`, `regular`, `solid`, `sharp-light`, `sharp-regular`, `sharp-solid`, or `brand`.
+
+3. Types and Brand Icons: If you are creating an icon with a type other than "brand," you must also create icons for all other types except "brand." For "brand" icons, you have the option to create icons for other types as well, but it's not mandatory.
+
+4. SVG Element Requirements: Each icon must be an SVG file and conform to the following requirements:
+
+- Include the xmlns attribute in the SVG element.
+- Define the viewBox attribute to ensure proper scaling and responsiveness.
+- The SVG element should contain only one <path> element representing the icon's shape.
+- The <path> element should have a d property specifying the path data for the icon.
+
+5. Color Customization: To allow for easy customization, the color of the entire icon should be controlled by the `fill` property of the SVG. Avoid hardcoding specific colors in the icon file.
 
 ## Code of Conduct
 
