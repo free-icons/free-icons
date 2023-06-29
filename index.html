@@ -40,10 +40,14 @@
         </div>
       </div>
     </nav>
-    <div id="icons"></div>
+    <div id="icons">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>      
+    </div>
 
     <!-- Tracker start -->
-    <div id="histats_counter" style="display: none"></div>
+    <!-- <div id="histats_counter" style="display: none"></div>
     <script type="text/javascript">
       var _Hasync = _Hasync || [];
       _Hasync.push(["Histats.start", "1,4779108,4,1,120,40,00010000"]);
@@ -68,7 +72,7 @@
           border="0"
         />
       </a>
-    </noscript>
+    </noscript> -->
     <!-- Tracker end -->
     <style>
       * {
@@ -150,10 +154,16 @@
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         width: min-content;
+        height: 100vh;
         margin-inline: auto;
         gap: 0.9rem;
         padding: 1rem;
         padding-top: 5.5rem;
+      }
+
+      #icons .spinner-border {
+        margin-top: 10rem;
+        color: #6366f1;
       }
 
       @media only screen and (max-width: 1360px) {
