@@ -8,11 +8,12 @@ Please take a moment to review the guidelines below to ensure a smooth and effec
 
 1. Fork the repository to your GitHub account.
 2. Clone the forked repository to your local machine.
-3. Make your desired changes or additions to the icon collection in the `data.json` file.
-4. Test your changes to ensure they are valid JSON and the icons function as expected.
-5. Commit your changes with a clear and descriptive commit message.
-6. Push your changes to your forked repository.
-7. Submit a pull request to the main Free Icons repository.
+3. Run `npm install && npm run build && cp dist/data.json ./data.json` to compile all the svgs in the `svgs` folder to `dist/data.json` file and copy the `dist/data.json` file to the root of the project (for development purpose only).
+4. Make your desired changes or additions to the icon collection in the `svgs` folder.
+5. Test your changes to ensure they are valid JSON and the icons function as expected.
+6. Commit your changes with a clear and descriptive commit message.
+7. Push your changes to your forked repository.
+8. Submit a pull request to the main Free Icons repository.
 
 ## Contribution Guidelines
 
