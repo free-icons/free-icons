@@ -21,6 +21,10 @@ We would like to express our gratitude to the [font-icons-scraper](https://githu
 
 We warmly welcome contributions from the community! If you have icons to share with others, please follow the guidelines outlined in [CONTRIBUTING.md](CONTRIBUTING.md) to contribute to the Free Icons repository.
 
+## Security Policy
+
+To report any security vulnerabilities or concerns, please refer to our [Security Policy](SECURITY.md).
+
 ## License
 
 All icons in this repository are released under the [Creative Commons Attribution 4.0 International (CC BY 4.0) license](LICENSE). Please review the license terms before using the icons in your projects.
