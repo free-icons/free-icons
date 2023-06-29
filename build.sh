@@ -15,3 +15,7 @@ fi
 
 cp index.html dist/
 cp -r src/ dist/
+cp README.md dist/
+cp LICENSE dist/
+cp CONTRIBUTING.md dist/
+cp CODE_OF_CONDUCT.md dist/

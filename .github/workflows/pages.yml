@@ -18,6 +18,7 @@ jobs:
         node-version: 18.12.1
         cache: "npm"
     - run: npm run build
+    - run: npm run test
     - name: Deploy
       uses: crazy-max/ghaction-github-pages@v3
       with:
