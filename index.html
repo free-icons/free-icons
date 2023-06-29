@@ -14,7 +14,7 @@
   </head>
 
   <body>
-    <nav id="header" class="navbar p-3">
+    <nav id="header" class="navbar py-1">
       <div class="container-fluid">
         <span class="navbar-brand mb-0 h1 text-white">Free Icons</span>
         <div>
@@ -40,7 +40,11 @@
         </div>
       </div>
     </nav>
-    <div id="icons"></div>
+    <div id="icons">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>      
+    </div>
 
     <!-- Tracker start -->
     <div id="histats_counter" style="display: none"></div>
@@ -86,7 +90,7 @@
       #search-input {
         margin-right: 1rem;
         height: 2.5rem;
-        max-width: calc(100vw - 240px);
+        max-width: calc(100vw - 200px);
       }
 
       #header {
@@ -150,13 +154,19 @@
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         width: min-content;
+        height: 100vh;
         margin-inline: auto;
         gap: 0.9rem;
-        padding: 1rem;
+        padding: 0.5rem;
         padding-top: 5.5rem;
       }
 
-      @media only screen and (max-width: 1360px) {
+      #icons .spinner-border {
+        margin-top: 10rem;
+        color: #6366f1;
+      }
+
+      @media only screen and (max-width: 1160px) {
         #icons {
           grid-template-columns: repeat(5, 1fr);
         }
@@ -166,7 +176,7 @@
         }
       }
 
-      @media only screen and (max-width: 1180px) {
+      @media only screen and (max-width: 980px) {
         #icons {
           grid-template-columns: repeat(4, 1fr);
         }
@@ -176,7 +186,7 @@
         }
       }
 
-      @media only screen and (max-width: 960px) {
+      @media only screen and (max-width: 760px) {
         #icons {
           grid-template-columns: repeat(3, 1fr);
         }
@@ -194,17 +204,18 @@
         }
 
         .icon {
-          width: calc((100vw - 6.4rem) / 3);
+          width: calc((100vw - 4rem) / 3);
+          padding-inline: 1rem;
         }
       }
 
-      @media only screen and (max-width: 720px) {
+      @media only screen and (max-width: 600px) {
         #icons {
           grid-template-columns: repeat(2, 1fr);
         }
 
         .icon {
-          width: calc((100vw - 6.4rem) / 2);
+          width: calc((100vw - 3rem) / 2);
         }
       }
     </style>
