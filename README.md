@@ -1,6 +1,6 @@
 # Free Icons
 
-Welcome to the Free Icons repository! This repository provides a collection of over 17,000 high-quality icons that you can use freely in your design projects. Whether you're working on web development, UI/UX design, or any other creative endeavor, you'll find a diverse range of icons to enhance your work.
+Welcome to the Free Icons repository! This repository provides a collection of over 22,000 high-quality icons that you can use freely in your design projects. Whether you're working on web development, UI/UX design, or any other creative endeavor, you'll find a diverse range of icons to enhance your work.
 
 ## Usage
 

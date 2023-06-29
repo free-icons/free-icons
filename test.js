@@ -33,4 +33,4 @@ for (let i = 0; i < data.length; i++) {
     );
 }
 
-console.log("Everything looks fine 👍.")
+console.log(`Everything looks fine 👍. total Icons: ${data.length}`);
