@@ -1,6 +1,16 @@
 const { readFileSync } = require("fs");
 
 const data = JSON.parse(readFileSync("dist/data.json").toString());
+const types = [
+  "brands",
+  "thin",
+  "light",
+  "regular",
+  "solid",
+  "sharp-light",
+  "sharp-regular",
+  "sharp-solid",
+];
 
 if (!Array.isArray(data)) throw new Error("data.json must consist of an array");
 for (let i = 0; i < data.length; i++) {
@@ -31,6 +41,7 @@ for (let i = 0; i < data.length; i++) {
     throw new Error(
       `key "viewBox" must be a valid viewBox found "${element.viewBox}"`
     );
+  if (!types.includes(element.type)) throw new Error(`Unexpected type of icon "${element.type}" at index ${i}`)
 }
 
 console.log(`Everything looks fine 👍. total Icons: ${data.length}`);
