@@ -146,7 +146,6 @@ function loadMoreIcons() {
  * @param {string} text the text to search
  */
 function search(text) {
-  console.log(text);
   icons = text == "" ? allIcons : index.search(text).map((el) => allIcons[el]);
   currentIndex = 0;
   resetIcons();
