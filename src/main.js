@@ -122,7 +122,7 @@ function downloadIcon(i) {
   const icon = icons[i];
   download(
     icon.name + "-" + icon.type + ".svg",
-    `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="${icon.viewBox}">
+    `<svg xmlns="http://www.w3.org/2000/svg" height="1em" color="currentColor" viewBox="${icon.viewBox}">
   <path
     d="${icon.d}"
   />
