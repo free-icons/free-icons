@@ -1,3 +1,5 @@
+"use strict";
+
 const { readFileSync } = require("fs");
 
 const data = JSON.parse(readFileSync("dist/data.json").toString());
