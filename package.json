@@ -2,10 +2,11 @@
   "name": "free-icons",
   "version": "1.0.0",
   "description": "Welcome to the Free Icons repository! This repository provides a collection of over 22,000 high-quality icons that you can use freely in your design projects. Whether you're working on web development, UI/UX design, or any other creative endeavor, you'll find a diverse range of icons to enhance your work.",
-  "main": "build.js",
+  "main": "index.js",
   "scripts": {
-    "build": "./build.sh",
-    "test": "node test.js"
+    "build": "node build.js",
+    "test": "node test.js",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,11 @@
   },
   "homepage": "https://github.com/free-icons/free-icons#readme",
   "dependencies": {
-    "svg-parser": "^2.0.4"
+    "chokidar": "^3.5.3",
+    "express": "^4.18.2",
+    "html-minifier": "^4.0.0",
+    "jsdom": "^22.1.0",
+    "svg-parser": "^2.0.4",
+    "ws": "^8.13.0"
   }
 }
