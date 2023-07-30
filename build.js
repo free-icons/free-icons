@@ -7,6 +7,7 @@ const { JSDOM } = require("jsdom");
 const { minify } = require("html-minifier");
 const path = require("path");
 const { exit } = require("process");
+const cliProgress = require("cli-progress");
 
 /**
  *
@@ -59,8 +60,11 @@ async function main() {
     "square-font-awesome",
     "square-font-awesome-stroke",
   ];
-
-  for (const svgFileName of await readdir(path.join(__dirname, "svgs"))) {
+  const svgFileNames = await readdir(path.join(__dirname, "svgs"));
+  const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  bar.start(svgFileNames.length*2, 0);
+  let progress = 0;
+  for (const svgFileName of svgFileNames) {
     const content = (
       await readFile(path.join(__dirname, "svgs", svgFileName))
     ).toString();
@@ -102,6 +106,7 @@ async function main() {
       viewBox,
       type,
     });
+    bar.update(++progress);
   }
 
   const types = [
@@ -117,7 +122,7 @@ async function main() {
   const uniqueIconNames = allIcons
     .map((el) => el.name)
     .filter((name, i) => allIcons.findIndex((el2) => el2.name == name) == i);
-  const icons = new Array(types.length * uniqueIconNames.length)
+  const uncategorisedIcons = new Array(types.length * uniqueIconNames.length)
     .fill(undefined)
     .map((_, i) =>
       allIcons.find(
@@ -127,6 +132,56 @@ async function main() {
       )
     )
     .filter((el) => !!el);
+  const icons = [];
+
+  for (let i = 0; i < uncategorisedIcons.length; i++) {
+    const uncategorisedIcon = uncategorisedIcons[i];
+    const existingIndex = icons.findIndex(icon => icon.name == uncategorisedIcon.name);
+    const variant =  uncategorisedIcon.type.startsWith("sharp-") ? "sharp" : "regular";
+    const type = variant == "sharp" ? uncategorisedIcon.type.slice(6) : uncategorisedIcon.type;
+    if (existingIndex >= 0) {
+      if (variant == "regular") {
+        icons[existingIndex].regularTypes.push({
+          d: uncategorisedIcon.d,
+          viewBox: uncategorisedIcon.viewBox,
+          type,
+        });
+      } else if (variant == "sharp") {
+        icons[existingIndex].sharpTypes.push({
+          d: uncategorisedIcon.d,
+          viewBox: uncategorisedIcon.viewBox,
+          type,
+        });
+      }
+    } else {
+      if (variant == "regular") {
+        icons.push({
+          name: uncategorisedIcon.name,
+          regularTypes: [
+            {
+              d: uncategorisedIcon.d,
+              viewBox: uncategorisedIcon.viewBox,
+              type,
+            }
+          ],
+          sharpTypes: []
+        });
+      } else if (variant == "sharp") {
+        icons.push({
+          name: uncategorisedIcon.name,
+          sharpTypes: [
+            {
+              d: uncategorisedIcon.d,
+              viewBox: uncategorisedIcon.viewBox,
+              type,
+            }
+          ],
+          regularTypes: []
+        });
+      }
+    }
+    bar.update(++progress);
+  }
 
   await writeFile(
     path.join(__dirname, "dist/data.json"),
@@ -195,14 +250,36 @@ async function main() {
     path.join(__dirname, "CODE_OF_CONDUCT.md"),
     path.join(__dirname, "dist", "CODE_OF_CONDUCT.md")
   );
+  await mkdir(path.join(__dirname, "dist", "img"));
+  const images = await readdir(path.join(__dirname, "img"));
+  for (let i = 0; i < images.length; i++) {
+    const image = images[i];
+    await cp(
+      path.join(__dirname, "img", image),
+      path.join(__dirname, "dist", "img", image)
+    );
+  }
+
+  if (existsSync(path.join(__dirname, "favicon.ico"))) {
+    await cp(
+      path.join(__dirname, "favicon.ico"),
+      path.join(__dirname, "dist", "favicon.ico")
+    );
+  }
+  if (existsSync(path.join(__dirname, "site.webmanifest"))) {
+    await cp(
+      path.join(__dirname, "site.webmanifest"),
+      path.join(__dirname, "dist", "site.webmanifest")
+    );
+  }
+  bar.stop();
 }
 
 const startTime = Date.now();
-console.log("Building ...");
 main()
   .then(() => {
     console.log(
-      "Build completed in %s seconds",
+      "\nBuild completed in %s seconds",
       (Date.now() - startTime) / 1000
     );
   })

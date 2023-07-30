@@ -1,13 +1,19 @@
+/** @typedef {{ type: "brands" | "thin" | "light" | "regular" | "solid", d: string, viewBox: string }} IconType */
+/** @typedef {{ name: string, regularTypes: IconType[], sharpTypes: IconType[] }} Icon */
+
 /** @type {HTMLDivElement} */
 const iconsEl = document.getElementById("icons");
 /** @type {HTMLInputElement} */
 const searchInput = document.getElementById("search-input");
+/** @type {HTMLDivElement} */
+const modalDiv = document.getElementById("icon-modal");
+const modal = new bootstrap.Modal(modalDiv);
 
 /*
  * to search the icons
  *
  * FlexSearch.Index
- *  Source: https://github.com/nextapps-de/flexsearch
+ * Source: https://github.com/nextapps-de/flexsearch
  */
 const index = new window.FlexSearch.Index({
   preset: "score",
@@ -16,9 +22,17 @@ const index = new window.FlexSearch.Index({
 
 // the index of the icon that have loaded with pagination
 let currentIndex = 0;
-// all icons
+
+/**
+ * all icons
+ * @type {Icon[]}
+ */
 let allIcons = [];
-// icons to show the user maybe the search result
+
+/**
+ * icons to show the user maybe the search result
+ * @type {Icon[]}
+ */
 let icons = [];
 
 /**
@@ -32,6 +46,17 @@ const getNoOfIconsInOneRow = () => {
   if (innerWidth < 1360) return 5;
   return 6;
 };
+
+/**
+ * used to request user to report a issue occured on runtime
+ * @param {string} issue issue
+ */
+function reportIssue(issue) {
+  alert(
+    "There is a issue. Please create an issue in the github repository providing detail: " +
+      issue
+  );
+}
 
 /**
  * returns scroll top
@@ -63,6 +88,14 @@ function download(name, source) {
 }
 
 /**
+ * copies the given text to user's clipboard
+ * @param {string} text text
+ */
+function copy(text) {
+  navigator.clipboard.writeText(text);
+}
+
+/**
  * returns document height
  * source: https://codepen.io/timseverien/pen/XXYaZe
  * @returns {number} document height
@@ -86,13 +119,14 @@ function getDocumentHeight() {
  * @returns {HTMLDivElement} icon
  */
 function createIcon(i) {
-  const data = icons[i];
+  const icon = icons[i];
   const root = document.createElement("div");
   root.className = "icon";
-  root.innerHTML = `<svg class="download" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="${
-    data.viewBox
-  }"><path d="${data.d}"/></svg><p class="mt-3">${data.name}-${data.type}</p>`;
-  root.onclick = () => downloadIcon(i);
+  const regularType = icon.regularTypes.find(
+    (el) => el.type == "regular" || el.type == "brands"
+  );
+  root.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="${regularType.viewBox}"><path d="${regularType.d}"/></svg><p class="mt-3">${icon.name}</p>`;
+  root.onclick = () => showModal(i);
   return root;
 }
 
@@ -103,31 +137,163 @@ function resetIcons() {
   currentIndex = getNoOfIconsInOneRow() * Math.ceil(innerHeight / 100);
   iconsEl.innerHTML = icons
     .slice(0, currentIndex)
-    .map(
-      (el, i) =>
-        `<div onclick="downloadIcon(${i})" class="icon"><svg class="download" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="${
-          el.viewBox
-        }"><path d="${el.d}"/></svg><p class="mt-3">${el.name}-${
-          el.type
-        }</p></div>`
-    )
+    .map((el, i) => {
+      const regularType = el.regularTypes.find(
+        (el1) => el1.type == "regular" || el1.type == "brands"
+      );
+      return `<div onclick="showModal(${i})" class="icon"><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="${regularType.viewBox}"><path d="${regularType.d}"/></svg><p class="mt-3">${el.name}</p></div>`;
+    })
     .join("");
 }
 
 /**
- * downloads the icon of the given index
- * @param {number} i index
+ * downloads the icon
+ * @param {string} name name of the svg icon
+ * @param {string} viewBox viewBox of the svg icon
+ * @param {string} d d property of the path tag
  */
-function downloadIcon(i) {
-  const icon = icons[i];
+function downloadIcon(name, viewBox, d) {
   download(
-    icon.name + "-" + icon.type + ".svg",
-    `<svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="${icon.viewBox}">
+    name + ".svg",
+    `<!-- ${name} icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+<svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="${viewBox}">
   <path
-    d="${icon.d}"
+    d="${d}"
   />
 </svg>`
   );
+}
+
+/**
+ * copies the icon
+ */
+function copyIcon(name, viewBox, d) {
+  copy(
+    `<!-- ${name} icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+<svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="${viewBox}">
+  <path
+    d="${d}"
+  />
+</svg>`
+  );
+}
+
+/**
+ * updates the icon modal's state and shows the modal
+ * @param {number} index index
+ */
+function showModal(index) {
+  setModalState(index, "regular");
+  modal.show();
+}
+
+/**
+ * returns true if the given icon only has one type (brands) else false
+ * @param {Icon} icon icon
+ * @returns {boolean}
+ */
+function isBrandIcon(icon) {
+  return (
+    icon.sharpTypes.length == 0 &&
+    icon.regularTypes.length == 1 &&
+    icon.regularTypes[0].type == "brands"
+  );
+}
+
+/**
+ * updates the state of the icon modal
+ * @param {number} index index
+ * @param {string} variant variant
+ * @param {string} [type=] type
+ * @returns
+ */
+function setModalState(index, variant, type) {
+  console.log(index, variant, type);
+  if (variant != "sharp" && variant != "regular")
+    return reportIssue(
+      `Unable to set modal state (Invalid variant ${variant})`
+    );
+  const icon = icons[index];
+  const label = modalDiv.querySelector("#icon-modal-label");
+  const body = modalDiv.querySelector(".modal-body");
+  const _iconType = icon[variant + "Types"].find((el) => el.type == type);
+  const iconType = _iconType || icon[variant + "Types"][0];
+  label.textContent = icon.name;
+  body.innerHTML = `
+  <div class="gap-5 m-2 m-md-5 mx-auto" style="width:calc(100% - 4rem)">
+    <div class="d-md-flex">
+      <div class="d-flex align-items-center justify-content-center p-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="${iconType.viewBox}"
+          style="width:min(200px,100vw - 200px)"
+        >
+          <path d="${iconType.d}" />
+        </svg>
+      </div>
+      <div style="width:100%">
+        <h3 class="mb-3">${icon.name}</h3>
+        ${
+          isBrandIcon(icon)
+            ? ""
+            : `<div class="d-md-flex gap-4">
+          <select id="variant-selector" class="form-select mb-4 mb-md-0" onchange="setModalState(${index}, this.value)">
+            <option${
+              variant == "regular" ? " selected" : ""
+            } value="regular">Regular</option>
+            ${
+              icon.sharpTypes.length > 0
+                ? `<option${
+                    variant == "sharp" ? " selected" : ""
+                  } value="sharp">Sharp</option>`
+                : ""
+            }
+          </select>
+          <div class="btn-group w-100" role="group" aria-label="Select icon type" id="type-selector">
+          ${icon[variant + "Types"]
+            .map(
+              (
+                type,
+                i
+              ) => `<input type="radio" class="btn-check" name="icon-type" id="icon-type-${i}" autocomplete="off" ${
+                type.type == iconType.type ? "checked" : ""
+              }>
+            <label class="btn btn-outline-primary" for="icon-type-${i}" onclick="setModalState(${index}, '${variant}', '${
+                type.type
+              }')">
+              <svg xmlns="http://www.w3.org/2000/svg" style="width: 40px" viewBox="${
+                type.viewBox
+              }">
+                <path d="${type.d}" />
+              </svg>
+            </label>`
+            )
+            .join("")}
+          </div>
+        </div>`
+        }
+      </div>
+    </div>
+    <div class="mt-4">
+      <pre style=""><code class="language-xml">&lt!-- ${
+        icon.name
+      } icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+&lt;svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="${
+    iconType.viewBox
+  }">
+  &ltpath d="${iconType.d}" />
+&lt;/svg></code></pre>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" onclick="copyIcon('${icon.name}', '${
+    iconType.viewBox
+  }', '${iconType.d}')">Copy</button>
+      <button class="btn btn-secondary" onclick="downloadIcon('${
+        icon.name
+      }', '${iconType.viewBox}', '${iconType.d}')">Download</button>
+    </div>
+  </div>`;
+  hljs.highlightAll();
 }
 
 /**

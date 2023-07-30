@@ -5,11 +5,11 @@ const chokidar = require("chokidar");
 const WebSocket = require("ws");
 const path = require("path");
 const fs = require("fs");
-const { existsSync } = require("fs");
-const { mkdir, rm, readdir, readFile } = require("fs/promises");
+const { readdir, readFile } = require("fs/promises");
 const { JSDOM } = require("jsdom");
 const { exit } = require("process");
 const { parse } = require("svg-parser");
+const cliProgress = require("cli-progress");
 
 const app = express();
 
@@ -161,12 +161,6 @@ function getContentType(extension) {
 }
 
 async function generateIconsMetadata() {
-  if (existsSync(path.join(__dirname, "dist")))
-    await rm(path.join(__dirname, "dist"), {
-      recursive: true,
-    });
-  await mkdir(path.join(__dirname, "dist"));
-
   const allIcons = [];
 
   const ignore = [
@@ -178,7 +172,11 @@ async function generateIconsMetadata() {
     "square-font-awesome-stroke",
   ];
 
-  for (const svgFileName of await readdir(path.join(__dirname, "svgs"))) {
+  const svgFileNames = await readdir(path.join(__dirname, "svgs"));
+  const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  bar.start(svgFileNames.length*2, 0);
+  let progress = 0;
+  for (const svgFileName of svgFileNames) {
     const content = (
       await readFile(path.join(__dirname, "svgs", svgFileName))
     ).toString();
@@ -220,6 +218,7 @@ async function generateIconsMetadata() {
       viewBox,
       type,
     });
+    bar.update(++progress);
   }
 
   const types = [
@@ -235,7 +234,7 @@ async function generateIconsMetadata() {
   const uniqueIconNames = allIcons
     .map((el) => el.name)
     .filter((name, i) => allIcons.findIndex((el2) => el2.name == name) == i);
-  const icons = new Array(types.length * uniqueIconNames.length)
+  const uncategorisedIcons = new Array(types.length * uniqueIconNames.length)
     .fill(undefined)
     .map((_, i) =>
       allIcons.find(
@@ -245,7 +244,64 @@ async function generateIconsMetadata() {
       )
     )
     .filter((el) => !!el);
+  const icons = [];
 
+  for (let i = 0; i < uncategorisedIcons.length; i++) {
+    const uncategorisedIcon = uncategorisedIcons[i];
+    const existingIndex = icons.findIndex(
+      (icon) => icon.name == uncategorisedIcon.name
+    );
+    const variant = uncategorisedIcon.type.startsWith("sharp-")
+      ? "sharp"
+      : "regular";
+    const type =
+      variant == "sharp"
+        ? uncategorisedIcon.type.slice(6)
+        : uncategorisedIcon.type;
+    if (existingIndex >= 0) {
+      if (variant == "regular") {
+        icons[existingIndex].regularTypes.push({
+          d: uncategorisedIcon.d,
+          viewBox: uncategorisedIcon.viewBox,
+          type,
+        });
+      } else if (variant == "sharp") {
+        icons[existingIndex].sharpTypes.push({
+          d: uncategorisedIcon.d,
+          viewBox: uncategorisedIcon.viewBox,
+          type,
+        });
+      }
+    } else {
+      if (variant == "regular") {
+        icons.push({
+          name: uncategorisedIcon.name,
+          regularTypes: [
+            {
+              d: uncategorisedIcon.d,
+              viewBox: uncategorisedIcon.viewBox,
+              type,
+            },
+          ],
+          sharpTypes: [],
+        });
+      } else if (variant == "sharp") {
+        icons.push({
+          name: uncategorisedIcon.name,
+          sharpTypes: [
+            {
+              d: uncategorisedIcon.d,
+              viewBox: uncategorisedIcon.viewBox,
+              type,
+            },
+          ],
+          regularTypes: [],
+        });
+      }
+    }
+    bar.update(++progress);
+  }
+  bar.stop();
   return icons;
 }
 
@@ -330,17 +386,13 @@ app.get("/data.json", (_, res) => {
 
 async function main() {
   const startTime = Date.now();
-  console.log("Building ...");
   try {
     iconsMetadata = await generateIconsMetadata();
   } catch (err) {
     console.log("Unable to generate icons metadata: %s", err);
     exit(1);
   }
-  console.log(
-    "Build completed in %s seconds",
-    (Date.now() - startTime) / 1000
-  );
+  console.log("\nBuild completed in %s seconds", (Date.now() - startTime) / 1000);
 
   const port = 3000;
 

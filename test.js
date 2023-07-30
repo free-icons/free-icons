@@ -1,49 +1,40 @@
 "use strict";
 
 const { readFileSync } = require("fs");
+const Joi = require("joi");
 
 const data = JSON.parse(readFileSync("dist/data.json").toString());
-const types = [
-  "brands",
-  "thin",
-  "light",
-  "regular",
-  "solid",
-  "sharp-light",
-  "sharp-regular",
-  "sharp-solid",
-];
+const types = ["brands", "thin", "light", "regular", "solid"];
 
-if (!Array.isArray(data)) throw new Error("data.json must consist of an array");
-for (let i = 0; i < data.length; i++) {
-  const element = data[i];
-  if (typeof element != "object")
-    throw new Error(
-      `expected an object found type "${typeof element}" at index ${i}`
-    );
-  if (Array.isArray(element))
-    throw new Error(`expected an object found type "array" at index ${i}`);
-  if (typeof element.d != "string")
-    throw new Error(
-      `key "d" must be a string found type "${typeof element.d}" at index ${i}`
-    );
-  if (typeof element.type != "string")
-    throw new Error(
-      `key "type" must be a string found type "${typeof element.type}" at index ${i}`
-    );
-  if (typeof element.viewBox != "string")
-    throw new Error(
-      `key "viewBox" must be a string found type "${typeof element.viewBox}" at index ${i}`
-    );
-  if (typeof element.name != "string")
-    throw new Error(
-      `key "name" must be a string found type "${typeof element.name}" at index ${i}`
-    );
-  if (element.viewBox.split(" ").length != 4)
-    throw new Error(
-      `key "viewBox" must be a valid viewBox found "${element.viewBox}"`
-    );
-  if (!types.includes(element.type)) throw new Error(`Unexpected type of icon "${element.type}" at index ${i}`)
+const iconTypeSchema = Joi.object({
+  d: Joi.string().required(),
+  viewBox: Joi.string()
+    .regex(
+      /^\s*(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s*$/
+    )
+    .required(),
+  type: Joi.string()
+    .allow(...types)
+    .required(),
+});
+
+const iconsSchema = Joi.array()
+  .items(
+    Joi.object({
+      name: Joi.string().required(),
+      regularTypes: Joi.array().items(iconTypeSchema).required(),
+      sharpTypes: Joi.array().items(iconTypeSchema).required(),
+    })
+  )
+  .required();
+
+const { error } = iconsSchema.validate(data);
+
+if (error) {
+  console.error("Error: " + error.details[0].message);
+} else {
+  const totalIcons = data
+    .map((el) => el.regularTypes.length + el.sharpTypes.length)
+    .reduce((acc, curr) => acc + curr, 0);
+  console.log(`Everything looks fine 👍. total Icons: ${totalIcons}`);
 }
-
-console.log(`Everything looks fine 👍. total Icons: ${data.length}`);
