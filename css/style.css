@@ -23,7 +23,11 @@
   top: 0;
   left: 0;
   width: 100vw;
-  z-index: 99999;
+  z-index: 9;
+}
+
+#icon-modal .modal-dialog {
+  max-width: 1200px;
 }
 
 .icon {
@@ -48,25 +52,8 @@
   text-align: center;
 }
 
-.icon .download {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 20px;
-  height: 20px;
-  color: #2d2d2d;
-  opacity: 0;
-  transition: opacity 100ms ease-in-out;
-  cursor: pointer;
-}
-
 .icon:hover {
   background-color: #6366f1;
-}
-
-.icon:hover .download {
-  opacity: 1;
-  color: #f5f5f5;
 }
 
 body {
