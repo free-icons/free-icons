@@ -32,6 +32,7 @@ const { error } = iconsSchema.validate(data);
 
 if (error) {
   console.error("Error: " + error.details[0].message);
+  process.exit(1);
 } else {
   const totalIcons = data
     .map((el) => el.regularTypes.length + el.sharpTypes.length)
