@@ -1,5 +1,3 @@
-<svg viewBox="0 0 316 512">
-  <path
-    d="M 0 0 L 36 0 L 316 512 L 280 512 L 0 0 L 0 0 Z"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path d="M 98 0 L 134 0 L 98 0 L 134 0 L 414 512 L 414 512 L 378 512 L 378 512 L 98 0 L 98 0 Z" />
 </svg>
