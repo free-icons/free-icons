@@ -62,7 +62,7 @@ async function main() {
   ];
   const svgFileNames = await readdir(path.join(__dirname, "svgs"));
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  bar.start(svgFileNames.length*2, 0);
+  bar.start(svgFileNames.length * 2, 0);
   let progress = 0;
   for (const svgFileName of svgFileNames) {
     const content = (
@@ -72,16 +72,16 @@ async function main() {
     const svg = root.children[0];
     if (!svg || svg.tagName != "svg" || !svg.properties.viewBox)
       throw new Error(
-        `Invalid svg: ${svgFileName}, expected a svg element found "${svg.tagName}"`
+        `Invalid svg: ${svgFileName}, expected a svg element found "${svg.tagName}"`,
       );
     if (svg.children.length != 1)
       throw new Error(
-        `expected only one svg children but found ${svg.children.length}`
+        `expected only one svg children but found ${svg.children.length}`,
       );
     const p = svg.children[0];
     if (!p || p.tagName != "path" || !p.properties.d)
       throw new Error(
-        `Invalid svg: ${svgFileName}, expected a path element found "${p.tagName}"`
+        `Invalid svg: ${svgFileName}, expected a path element found "${p.tagName}"`,
       );
     const d = p.properties.d;
     const viewBox = svg.properties.viewBox;
@@ -128,17 +128,24 @@ async function main() {
       allIcons.find(
         (el) =>
           el.name == uniqueIconNames[Math.floor(i / types.length)] &&
-          el.type == types[i % types.length]
-      )
+          el.type == types[i % types.length],
+      ),
     )
     .filter((el) => !!el);
   const icons = [];
 
   for (let i = 0; i < uncategorisedIcons.length; i++) {
     const uncategorisedIcon = uncategorisedIcons[i];
-    const existingIndex = icons.findIndex(icon => icon.name == uncategorisedIcon.name);
-    const variant =  uncategorisedIcon.type.startsWith("sharp-") ? "sharp" : "regular";
-    const type = variant == "sharp" ? uncategorisedIcon.type.slice(6) : uncategorisedIcon.type;
+    const existingIndex = icons.findIndex(
+      (icon) => icon.name == uncategorisedIcon.name,
+    );
+    const variant = uncategorisedIcon.type.startsWith("sharp-")
+      ? "sharp"
+      : "regular";
+    const type =
+      variant == "sharp"
+        ? uncategorisedIcon.type.slice(6)
+        : uncategorisedIcon.type;
     if (existingIndex >= 0) {
       if (variant == "regular") {
         icons[existingIndex].regularTypes.push({
@@ -162,9 +169,9 @@ async function main() {
               d: uncategorisedIcon.d,
               viewBox: uncategorisedIcon.viewBox,
               type,
-            }
+            },
           ],
-          sharpTypes: []
+          sharpTypes: [],
         });
       } else if (variant == "sharp") {
         icons.push({
@@ -174,9 +181,9 @@ async function main() {
               d: uncategorisedIcon.d,
               viewBox: uncategorisedIcon.viewBox,
               type,
-            }
+            },
           ],
-          regularTypes: []
+          regularTypes: [],
         });
       }
     }
@@ -185,7 +192,7 @@ async function main() {
 
   await writeFile(
     path.join(__dirname, "dist/data.json"),
-    JSON.stringify(icons)
+    JSON.stringify(icons),
   );
 
   const indexHtml = (
@@ -229,26 +236,26 @@ async function main() {
       removeEmptyAttributes: true,
       minifyJS: true,
       minifyCSS: true,
-    }
+    },
   );
 
   await writeFile(path.join(__dirname, "dist", "index.html"), minifiedHtml);
 
   await cp(
     path.join(__dirname, "README.md"),
-    path.join(__dirname, "dist", "README.md")
+    path.join(__dirname, "dist", "README.md"),
   );
   await cp(
     path.join(__dirname, "LICENSE"),
-    path.join(__dirname, "dist", "LICENSE")
+    path.join(__dirname, "dist", "LICENSE"),
   );
   await cp(
     path.join(__dirname, "CONTRIBUTING.md"),
-    path.join(__dirname, "dist", "CONTRIBUTING.md")
+    path.join(__dirname, "dist", "CONTRIBUTING.md"),
   );
   await cp(
     path.join(__dirname, "CODE_OF_CONDUCT.md"),
-    path.join(__dirname, "dist", "CODE_OF_CONDUCT.md")
+    path.join(__dirname, "dist", "CODE_OF_CONDUCT.md"),
   );
   await mkdir(path.join(__dirname, "dist", "img"));
   const images = await readdir(path.join(__dirname, "img"));
@@ -256,20 +263,20 @@ async function main() {
     const image = images[i];
     await cp(
       path.join(__dirname, "img", image),
-      path.join(__dirname, "dist", "img", image)
+      path.join(__dirname, "dist", "img", image),
     );
   }
 
   if (existsSync(path.join(__dirname, "favicon.ico"))) {
     await cp(
       path.join(__dirname, "favicon.ico"),
-      path.join(__dirname, "dist", "favicon.ico")
+      path.join(__dirname, "dist", "favicon.ico"),
     );
   }
   if (existsSync(path.join(__dirname, "site.webmanifest"))) {
     await cp(
       path.join(__dirname, "site.webmanifest"),
-      path.join(__dirname, "dist", "site.webmanifest")
+      path.join(__dirname, "dist", "site.webmanifest"),
     );
   }
   bar.stop();
@@ -280,7 +287,7 @@ main()
   .then(() => {
     console.log(
       "\nBuild completed in %s seconds",
-      (Date.now() - startTime) / 1000
+      (Date.now() - startTime) / 1000,
     );
   })
   .catch((err) => {

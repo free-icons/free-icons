@@ -10,7 +10,7 @@ const iconTypeSchema = Joi.object({
   d: Joi.string().required(),
   viewBox: Joi.string()
     .regex(
-      /^\s*(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s*$/
+      /^\s*(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s*$/,
     )
     .required(),
   type: Joi.string()
@@ -24,7 +24,7 @@ const iconsSchema = Joi.array()
       name: Joi.string().required(),
       regularTypes: Joi.array().items(iconTypeSchema).required(),
       sharpTypes: Joi.array().items(iconTypeSchema).required(),
-    })
+    }),
   )
   .required();
 

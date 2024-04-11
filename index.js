@@ -174,7 +174,7 @@ async function generateIconsMetadata() {
 
   const svgFileNames = await readdir(path.join(__dirname, "svgs"));
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  bar.start(svgFileNames.length*2, 0);
+  bar.start(svgFileNames.length * 2, 0);
   let progress = 0;
   for (const svgFileName of svgFileNames) {
     const content = (
@@ -184,16 +184,16 @@ async function generateIconsMetadata() {
     const svg = root.children[0];
     if (!svg || svg.tagName != "svg" || !svg.properties.viewBox)
       throw new Error(
-        `Invalid svg: ${svgFileName}, expected a svg element found "${svg.tagName}"`
+        `Invalid svg: ${svgFileName}, expected a svg element found "${svg.tagName}"`,
       );
     if (svg.children.length != 1)
       throw new Error(
-        `expected only one svg children but found ${svg.children.length}`
+        `expected only one svg children but found ${svg.children.length}`,
       );
     const p = svg.children[0];
     if (!p || p.tagName != "path" || !p.properties.d)
       throw new Error(
-        `Invalid svg: ${svgFileName}, expected a path element found "${p.tagName}"`
+        `Invalid svg: ${svgFileName}, expected a path element found "${p.tagName}"`,
       );
     const d = p.properties.d;
     const viewBox = svg.properties.viewBox;
@@ -240,8 +240,8 @@ async function generateIconsMetadata() {
       allIcons.find(
         (el) =>
           el.name == uniqueIconNames[Math.floor(i / types.length)] &&
-          el.type == types[i % types.length]
-      )
+          el.type == types[i % types.length],
+      ),
     )
     .filter((el) => !!el);
   const icons = [];
@@ -249,7 +249,7 @@ async function generateIconsMetadata() {
   for (let i = 0; i < uncategorisedIcons.length; i++) {
     const uncategorisedIcon = uncategorisedIcons[i];
     const existingIndex = icons.findIndex(
-      (icon) => icon.name == uncategorisedIcon.name
+      (icon) => icon.name == uncategorisedIcon.name,
     );
     const variant = uncategorisedIcon.type.startsWith("sharp-")
       ? "sharp"
@@ -370,7 +370,7 @@ function root(_, res) {
       const dom = new JSDOM(data.toString());
       dom.window.document.body.innerHTML += `<script>const s=new WebSocket("ws://localhost:3000");s.onmessage=(e)=>e.data=="refresh"&&location.reload();s.onopen=()=>console.log('Connected to server');s.onclose=()=>console.log('Disconnected from server')</script>`;
       res.send(
-        "<!DOCTYPE html>" + dom.window.document.documentElement.outerHTML
+        "<!DOCTYPE html>" + dom.window.document.documentElement.outerHTML,
       );
     }
   });
@@ -392,7 +392,10 @@ async function main() {
     console.log("Unable to generate icons metadata: %s", err);
     exit(1);
   }
-  console.log("\nBuild completed in %s seconds", (Date.now() - startTime) / 1000);
+  console.log(
+    "\nBuild completed in %s seconds",
+    (Date.now() - startTime) / 1000,
+  );
 
   const port = 3000;
 
