@@ -8,17 +8,10 @@ const searchInput = document.getElementById("search-input");
 /** @type {HTMLDivElement} */
 const modalDiv = document.getElementById("icon-modal");
 const modal = new bootstrap.Modal(modalDiv);
+let __searchVersion = 0;
 
-/*
- * to search the icons
- *
- * FlexSearch.Index
- * Source: https://github.com/nextapps-de/flexsearch
- */
-const index = new window.FlexSearch.Index({
-  preset: "score",
-  tokenize: "full",
-});
+const client = algoliasearch("M19DXW5X0Q", "c79b2e61519372a99fa5890db070064c");
+const index = client.initIndex("fontawesome_com-splayed-6.5.2");
 
 // the index of the icon that have loaded with pagination
 let currentIndex = 0;
@@ -309,11 +302,74 @@ function loadMoreIcons() {
 }
 
 /**
+ * gets search results from algolia
+ *
+ * @param {string} query search query
+ * @returns {Promise<string[]>} search results
+ */
+async function getSearchResults(query) {
+  const hits = [];
+  let nbPages = 1;
+  let page = 0;
+
+  while (page < nbPages) {
+    const res = await index.search(query, {
+      hitsPerPage: 1000,
+      page,
+    });
+    for (const hit of res.hits) {
+      if (hits.some((hit2) => hit2.name == hit.name && hit2.type == hit.type))
+        continue;
+      hits.push(hit);
+    }
+    nbPages = res.nbPages;
+    page++;
+  }
+
+  const icons = [];
+
+  for (const hit of hits) {
+    if (hit.type == "icon") {
+      if (icons.includes(hit.name)) continue;
+      icons.push(hit.name);
+      continue;
+    }
+
+    if (hit.type == "category") {
+      for (const icon of hit.icons) {
+        if (icons.includes(icon)) continue;
+        icons.push(icon);
+      }
+      continue;
+    }
+
+    if (hit.type == "shim") {
+      if (icons.includes(hit.name)) continue;
+      icons.push(hit.name);
+      continue;
+    }
+
+    console.warn("Unrecognized hit", hit);
+  }
+
+  return icons;
+}
+
+/**
  * search the text in the icons and shows the result
  * @param {string} text the text to search
  */
-function search(text) {
-  icons = text == "" ? allIcons : index.search(text).map((el) => allIcons[el]);
+async function search(text) {
+  const currentSearchVersion = ++__searchVersion;
+  const searchedIcons =
+    text == ""
+      ? allIcons
+      : (await getSearchResults(text))
+          .map((name) => allIcons.find((icon) => icon.name == name))
+          .filter((icon) => icon != undefined);
+  if (currentSearchVersion == __searchVersion) {
+    icons = searchedIcons;
+  }
   currentIndex = 0;
   resetIcons();
 }
@@ -327,12 +383,6 @@ window.onscroll = loadMoreIcons;
 fetch("./data.json")
   .then((r) => r.json())
   .then((_allIcons) => {
-    // index all the fonts by name and type
-    for (let i = 0; i < _allIcons.length; i++) {
-      const icon = _allIcons[i];
-      index.add(i, icon.name + "-" + icon.type);
-    }
-
     // save the icons
     allIcons = _allIcons;
     // see if there's a icon search query in the url
