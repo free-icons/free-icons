@@ -11,9 +11,8 @@
 }
 
 #search-input {
-  margin-right: 1rem;
   height: 2.5rem;
-  max-width: calc(100vw - 200px);
+  max-width: calc(100vw - 270px);
 }
 
 #header {
@@ -60,14 +59,17 @@ body {
   background-color: #f0f1f3;
 }
 
+#icons-wrapper {
+  width: min-content;
+  margin-inline: auto;
+  padding: 0.5rem;
+  padding-top: 5.5rem;
+}
+
 #icons {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  width: min-content;
-  margin-inline: auto;
   gap: 0.9rem;
-  padding: 0.5rem;
-  padding-top: 5.5rem;
 }
 
 #icons .spinner-border {

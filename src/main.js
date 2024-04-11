@@ -8,7 +8,10 @@ const searchInput = document.getElementById("search-input");
 /** @type {HTMLDivElement} */
 const modalDiv = document.getElementById("icon-modal");
 const modal = new bootstrap.Modal(modalDiv);
+/** @type {HTMLInputElement} */
+const iconColorSelector = document.getElementById("icon-color-selector");
 let __searchVersion = 0;
+let iconColor = "black";
 
 const client = algoliasearch("M19DXW5X0Q", "c79b2e61519372a99fa5890db070064c");
 const index = client.initIndex("fontawesome_com-splayed-6.5.2");
@@ -40,6 +43,10 @@ const getNoOfIconsInOneRow = () => {
   return 6;
 };
 
+function updateIconColor() {
+  document.body.style.setProperty("--icon-color", iconColor);
+}
+
 /**
  * used to request user to report a issue occured on runtime
  * @param {string} issue issue
@@ -47,7 +54,7 @@ const getNoOfIconsInOneRow = () => {
 function reportIssue(issue) {
   alert(
     "There is a issue. Please create an issue in the github repository providing detail: " +
-      issue
+      issue,
   );
 }
 
@@ -69,7 +76,7 @@ function getScrollTop() {
  * @param {string} source source of the file
  * @param {string} [type="text/plain"] mime type of the source
  */
-function download(name, source, type="text/plain") {
+function download(name, source, type = "text/plain") {
   const blob = new Blob([source], { type });
   const url = URL.createObjectURL(blob);
 
@@ -103,7 +110,7 @@ function getDocumentHeight() {
     body.offsetHeight,
     html.clientHeight,
     html.scrollHeight,
-    html.offsetHeight
+    html.offsetHeight,
   );
 }
 
@@ -117,9 +124,9 @@ function createIcon(i) {
   const root = document.createElement("div");
   root.className = "icon";
   const regularType = icon.regularTypes.find(
-    (el) => el.type == "regular" || el.type == "brands"
+    (el) => el.type == "regular" || el.type == "brands",
   );
-  root.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="${regularType.viewBox}"><path d="${regularType.d}"/></svg><p class="mt-3">${icon.name}</p>`;
+  root.innerHTML = `<svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color: var(--icon-color)" height="2em" viewBox="${regularType.viewBox}"><path d="${regularType.d}"/></svg><p class="mt-3">${icon.name}</p>`;
   root.onclick = () => showModal(i);
   return root;
 }
@@ -133,9 +140,9 @@ function resetIcons() {
     .slice(0, currentIndex)
     .map((el, i) => {
       const regularType = el.regularTypes.find(
-        (el1) => el1.type == "regular" || el1.type == "brands"
+        (el1) => el1.type == "regular" || el1.type == "brands",
       );
-      return `<div onclick="showModal(${i})" class="icon"><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="${regularType.viewBox}"><path d="${regularType.d}"/></svg><p class="mt-3">${el.name}</p></div>`;
+      return `<div onclick="showModal(${i})" class="icon"><svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="color: var(--icon-color)" height="2em" viewBox="${regularType.viewBox}"><path d="${regularType.d}"/></svg><p class="mt-3">${el.name}</p></div>`;
     })
     .join("");
 }
@@ -155,7 +162,7 @@ function downloadIcon(name, viewBox, d) {
     d="${d}"
   />
 </svg>`,
-    "image/svg+xml"
+    "image/svg+xml",
   );
 }
 
@@ -169,7 +176,7 @@ function copyIcon(name, viewBox, d) {
   <path
     d="${d}"
   />
-</svg>`
+</svg>`,
   );
 }
 
@@ -205,7 +212,7 @@ function isBrandIcon(icon) {
 function setModalState(index, variant, type) {
   if (variant != "sharp" && variant != "regular")
     return reportIssue(
-      `Unable to set modal state (Invalid variant ${variant})`
+      `Unable to set modal state (Invalid variant ${variant})`,
     );
   const icon = icons[index];
   const label = modalDiv.querySelector("#icon-modal-label");
@@ -220,7 +227,8 @@ function setModalState(index, variant, type) {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="${iconType.viewBox}"
-          style="width:min(200px,100vw - 200px)"
+          style="width:min(200px,100vw - 200px); color: var(--icon-color)"
+          fill="currentColor"
         >
           <path d="${iconType.d}" />
         </svg>
@@ -248,19 +256,19 @@ function setModalState(index, variant, type) {
             .map(
               (
                 type,
-                i
+                i,
               ) => `<input type="radio" class="btn-check" name="icon-type" id="icon-type-${i}" autocomplete="off" ${
                 type.type == iconType.type ? "checked" : ""
               }>
             <label class="btn btn-outline-primary" for="icon-type-${i}" onclick="setModalState(${index}, '${variant}', '${
-                type.type
-              }')">
+              type.type
+            }')">
               <svg xmlns="http://www.w3.org/2000/svg" style="width: 40px" viewBox="${
                 type.viewBox
               }">
                 <path d="${type.d}" />
               </svg>
-            </label>`
+            </label>`,
             )
             .join("")}
           </div>
@@ -280,8 +288,8 @@ function setModalState(index, variant, type) {
     </div>
     <div class="mt-4 d-flex gap-2">
       <button class="btn btn-primary" onclick="copyIcon('${icon.name}', '${
-    iconType.viewBox
-  }', '${iconType.d}')">Copy</button>
+        iconType.viewBox
+      }', '${iconType.d}')">Copy</button>
       <button class="btn btn-secondary" onclick="downloadIcon('${
         icon.name
       }', '${iconType.viewBox}', '${iconType.d}')">Download</button>
@@ -375,6 +383,12 @@ async function search(text) {
 }
 
 searchInput.oninput = () => search(searchInput.value);
+iconColorSelector.onchange = () => {
+  iconColor = iconColorSelector.value;
+  updateIconColor();
+};
+
+iconColorSelector.value = iconColor;
 
 window.onresize = loadMoreIcons;
 window.onscroll = loadMoreIcons;
@@ -389,5 +403,6 @@ fetch("./data.json")
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query");
     // search the input value if not present then try to search the url search query
+    updateIconColor();
     search(searchInput.value || query || "");
   });
