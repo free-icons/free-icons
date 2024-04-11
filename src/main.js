@@ -210,7 +210,6 @@ function isBrandIcon(icon) {
  * @returns
  */
 function setModalState(index, variant, type) {
-  console.log(index, variant, type);
   if (variant != "sharp" && variant != "regular")
     return reportIssue(
       `Unable to set modal state (Invalid variant ${variant})`
