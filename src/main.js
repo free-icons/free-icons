@@ -74,13 +74,14 @@ function getScrollTop() {
  * downloads the given source on the user's file system with the given name and a svg mime type
  * @param {string} name name of the file
  * @param {string} source source of the file
+ * @param {string} [type="text/plain"] mime type of the source
  */
-function download(name, source) {
-  const blob = new Blob([source], { type: "text/plain" });
+function download(name, source, type="text/plain") {
+  const blob = new Blob([source], { type });
   const url = URL.createObjectURL(blob);
 
   const anchor = document.createElement("a");
-  anchor.type = "text/plain";
+  anchor.type = type;
   anchor.download = name;
   anchor.href = url;
   anchor.click();
@@ -160,7 +161,8 @@ function downloadIcon(name, viewBox, d) {
   <path
     d="${d}"
   />
-</svg>`
+</svg>`,
+    "image/svg+xml"
   );
 }
 
